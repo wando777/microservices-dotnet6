@@ -1,0 +1,133 @@
+# Arquivos de compilação
+*.exe
+*.dll
+*.pdb
+
+# Arquivos de saída
+*.obj
+*.bin
+*.bak
+*.cache
+*.log
+*.vspscc
+*.vssscc
+.builds
+
+# Diretórios de saída
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# Arquivos de projeto específicos
+*.csproj.user
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Arquivos de teste
+*.testsettings
+*.testhost
+*.testrunconfig
+
+# Arquivos de ferramentas
+_ReSharper*/
+*.resharper*
+[Tt]est[Rr]esult*
+
+# Arquivos de análise de código
+*.sln.ide
+*.sln.ide-shm
+*.sln.ide-wal
+
+# Arquivos de publicação
+*.Publish.xml
+*.publishproj
+
+# Arquivos de análise de cobertura de código
+*.opencover*
+*.dotCover*
+*.coverlet*
+*.ncover*
+*.ncrunch*
+*.tc.*
+
+# Arquivos de ferramentas de construção
+msbuild.log*
+msbuild.err*
+msbuild.wrn*
+
+# Arquivos de rastreamento de código
+*.sw?
+*.swo
+*.swp
+*.swn
+*.swm
+
+# Arquivos de configuração do Visual Studio
+*.vs/config/applicationhost.config
+*.vs/config/*.pubxml
+*.vs/config/*.pubxml.user
+*.vs/config/*.user
+*.vs/config/*.vspscc
+*.vs/config/*.vssscc
+*.vs/config/*.wpp.*
+*.vs/config/*.wpp.*.ruleset
+*.vs/config/*.wpp.*.targets
+.vs/config/Server/sqlite3/db.lock
+
+# Arquivos de configuração do Rider
+.idea/
+*.sln.iml
+*.ipr
+*.iws
+*.iml
+*.ide-shm
+*.ide-wal
+*.coverage
+*.dotSettings.user
+*.csproj.DotSettings.user
+*.sln.DotSettings.user
+*.suo
+*.userprefs
+*.userworkspace
+*.resharper.user
+*.resharperoptions
+*.sln.DotSettings.user
+*.suo
+*.userprefs
+*.userworkspace
+*.resharper.user
+*.resharperoptions
+
+# Arquivos de configuração do Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Arquivos de configuração do NuGet
+*.nuget.props
+*.nuget.targets
+
+# Arquivos de configuração do Windows Forms Designer
+*.exe.config
+*.pdb.config
+
+# Arquivos de configuração do TeamCity
+_TeamCity*
+*.tclog
+*.tcstate
+
+# Arquivos de configuração do AppVeyor
+appveyor.yml
+appveyor.yml.bak
+
+# Arquivos de configuração do Azure Pipelines
+azure-pipelines.yml
+azure-pipelines.yml.bak
+
+# Arquivos de configuração do GitHub Actions
+.github/workflows/

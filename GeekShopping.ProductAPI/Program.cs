@@ -4,6 +4,8 @@ using GeekShopping.ProductAPI.Model.Context;
 using GeekShopping.ProductAPI.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Prometheus;
+using Prometheus.DotNetRuntime;
 
 namespace GeekShopping.ProductAPI
 {
@@ -11,10 +13,14 @@ namespace GeekShopping.ProductAPI
     {
         public static void Main(string[] args)
         {
+            var collector = CreateCollector();
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
             builder.Services.AddControllers();
+
+            // Adicionando healthcheck para monitoramento
+            builder.Services.AddHealthChecks();
 
             // Configure MySQL connection
             var configuration = builder.Configuration;
@@ -38,6 +44,12 @@ namespace GeekShopping.ProductAPI
 
             var app = builder.Build();
 
+            app.MapHealthChecks("/healthz");
+
+            // Aplica as migrações e atualiza o banco de dados
+            ApplyMigrations(app);
+
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -45,11 +57,47 @@ namespace GeekShopping.ProductAPI
                 app.UseSwaggerUI();
             }
 
+            app.UseHttpMetrics();
+
+            app.UseMetricServer();
+
+            app.UseRouting();
+
             app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapMetrics();
+            });
 
             app.MapControllers();
 
             app.Run();
+        }
+        private static void ApplyMigrations(IApplicationBuilder app)
+        {
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var dbContext = services.GetRequiredService<MySqlContext>();
+
+                // Cria uma nova migração para adicionar a nova tabela (se ainda não existir)
+                dbContext.Database.EnsureCreated();
+            }
+        }
+        public static IDisposable CreateCollector()
+        {
+            var builder = DotNetRuntimeStatsBuilder.Default();
+            builder = DotNetRuntimeStatsBuilder.Customize()
+                .WithContentionStats(CaptureLevel.Informational)
+                .WithGcStats(CaptureLevel.Verbose)
+                .WithThreadPoolStats(CaptureLevel.Informational)
+                .WithExceptionStats(CaptureLevel.Errors)
+                .WithJitStats();
+
+            builder.RecycleCollectorsEvery(new TimeSpan(0, 0, 20, 0));
+
+            return builder.StartCollecting();
         }
     }
 }

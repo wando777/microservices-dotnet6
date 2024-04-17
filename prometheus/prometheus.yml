@@ -1,0 +1,28 @@
+# Global configuration
+global:
+  scrape_interval: 15s # How frequently to scrape targets (default is every 15 seconds)
+#  evaluation_interval: 15s # How frequently to evaluate rules (default is every 15 seconds)
+
+# Alerting configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+#            - localhost:9093 # The address of the Alertmanager instance
+
+# Rule files to be used for alerting and recording rules
+rule_files:
+#  - "alert.rules.yml" # Path to the alerting rules file
+#  - "recording.rules.yml" # Path to the recording rules file
+
+# Scrape configuration for targets
+scrape_configs:
+  - job_name: "prometheus" # The name of the job
+    static_configs:
+      - targets:
+          - localhost:9090 # The address of the Prometheus instance
+
+  - job_name: "geekshopping" # The name of the job
+    static_configs:
+      - targets:
+          - geekshopping.productapi:80 # The address of the Node Exporter instance

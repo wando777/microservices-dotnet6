@@ -7,9 +7,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FrontEnd", "FrontEnd", "{5A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{93D11826-114E-4AC6-8F0D-76AF1C76D512}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeekShopping.Web", "GeekShopping.Web\GeekShopping.Web.csproj", "{D7C7DE62-3089-4420-8855-8B22BF174A42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeekShopping.Web", "GeekShopping.Web\GeekShopping.Web.csproj", "{D7C7DE62-3089-4420-8855-8B22BF174A42}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeekShopping.ProductAPI", "GeekShopping.ProductAPI\GeekShopping.ProductAPI.csproj", "{67F28EAB-52D2-46D7-93D9-CA629336D6E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeekShopping.ProductAPI", "GeekShopping.ProductAPI\GeekShopping.ProductAPI.csproj", "{67F28EAB-52D2-46D7-93D9-CA629336D6E3}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{4DBEB42E-D294-49E6-AD04-C9CA53EE7741}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,6 +27,10 @@ Global
 		{67F28EAB-52D2-46D7-93D9-CA629336D6E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67F28EAB-52D2-46D7-93D9-CA629336D6E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67F28EAB-52D2-46D7-93D9-CA629336D6E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DBEB42E-D294-49E6-AD04-C9CA53EE7741}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DBEB42E-D294-49E6-AD04-C9CA53EE7741}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DBEB42E-D294-49E6-AD04-C9CA53EE7741}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DBEB42E-D294-49E6-AD04-C9CA53EE7741}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

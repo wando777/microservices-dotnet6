@@ -1,0 +1,35 @@
+version: '3.4'
+services:
+  geekshopping.productapi:
+    image: ${DOCKER_REGISTRY-}geekshoppingproductapi
+    build:
+        context: .
+        dockerfile: GeekShopping.ProductAPI/Dockerfile
+    ports:
+        - "8081:80"
+    depends_on:
+        - sqldata
+    networks:
+        - geekshopping
+
+  sqldata:
+    image: "mysql:latest"
+    environment:
+        MYSQL_ROOT_PASSWORD: "senha"
+    ports:
+        - "7077:3306"
+    networks:
+        - geekshopping
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+    - /Users/wanderson.leite/Desktop/Estudos/pós-arquitetura/devops/scripts\ yml/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+        - "9090:9090"
+    networks:
+        - geekshopping
+
+networks:
+    geekshopping:
+        driver: bridge

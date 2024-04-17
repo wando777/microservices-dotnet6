@@ -1,6 +1,7 @@
 ﻿using GeekShopping.ProductAPI.Data.DTOs;
 using GeekShopping.ProductAPI.Repository;
 using Microsoft.AspNetCore.Mvc;
+using Prometheus;
 
 namespace GeekShopping.ProductAPI.Controllers
 {
@@ -9,6 +10,8 @@ namespace GeekShopping.ProductAPI.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
+        private static readonly Counter ProcessedJobCount = Metrics
+    .CreateCounter("myapp_jobs_processed_total", "Number of processed jobs.");
 
         public ProductController(IProductRepository productRepository)
         {
@@ -26,6 +29,7 @@ namespace GeekShopping.ProductAPI.Controllers
         public async Task<ActionResult<ProductDTO>> GetProductById(long productId)
         {
             ProductDTO? product = null;
+            ProcessedJobCount.Inc();
             try
             {
                 product = await _productRepository.GetProductById(productId);
@@ -48,7 +52,7 @@ namespace GeekShopping.ProductAPI.Controllers
         [HttpPut]
         public async Task<ActionResult<ProductDTO>> UpdateProduct(ProductDTO product)
         {
-            if(product == null) return BadRequest();
+            if (product == null) return BadRequest();
             var updatedProduct = await _productRepository.UpdateProduct(product);
             return Ok(updatedProduct);
         }

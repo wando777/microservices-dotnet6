@@ -1,0 +1,29 @@
+{
+    "tasks": [
+        {
+            "name": "dotnet-format",
+            "group": "pre-commit",
+            "command": "dotnet",
+            "args": [
+                "format",
+                "./GeekShop.sln",
+                "--include",
+                "${staged}"
+            ],
+            "include": [
+                "**/*.cs"
+            ]
+        },
+        {
+            "name": "Run csharpier",
+            "command": "dotnet",
+            "args": [
+                "csharpier",
+                "${staged}"
+            ],
+            "include": [
+                "**/*.cs"
+            ]
+        }
+    ]
+}

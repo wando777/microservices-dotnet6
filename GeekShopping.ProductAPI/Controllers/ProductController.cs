@@ -1,4 +1,4 @@
-﻿using GeekShopping.ProductAPI.Data.DTOs;
+using GeekShopping.ProductAPI.Data.DTOs;
 using GeekShopping.ProductAPI.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Prometheus;
@@ -10,12 +10,15 @@ namespace GeekShopping.ProductAPI.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
-        private static readonly Counter ProcessedJobCount = Metrics
-    .CreateCounter("myapp_jobs_processed_total", "Number of processed jobs.");
+        private static readonly Counter ProcessedJobCount = Metrics.CreateCounter(
+            "myapp_jobs_processed_total",
+            "Number of processed jobs."
+        );
 
         public ProductController(IProductRepository productRepository)
         {
-            _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
+            _productRepository =
+                productRepository ?? throw new ArgumentNullException(nameof(productRepository));
         }
 
         [HttpGet]
@@ -45,14 +48,16 @@ namespace GeekShopping.ProductAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<ProductDTO>> CreateProduct(ProductDTO product)
         {
-            if (product == null) return BadRequest();
+            if (product == null)
+                return BadRequest();
             return Ok(await _productRepository.CreateProduct(product));
         }
 
         [HttpPut]
         public async Task<ActionResult<ProductDTO>> UpdateProduct(ProductDTO product)
         {
-            if (product == null) return BadRequest();
+            if (product == null)
+                return BadRequest();
             var updatedProduct = await _productRepository.UpdateProduct(product);
             return Ok(updatedProduct);
         }

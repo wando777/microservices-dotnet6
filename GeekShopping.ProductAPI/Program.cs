@@ -46,7 +46,7 @@ namespace GeekShopping.ProductAPI
 
             app.MapHealthChecks("/healthz");
 
-            // Aplica as migrações e atualiza o banco de dados
+            // Aplica as migraÃ§Ãµes e atualiza o banco de dados
             ApplyMigrations(app);
 
 
@@ -81,7 +81,7 @@ namespace GeekShopping.ProductAPI
                 var services = scope.ServiceProvider;
                 var dbContext = services.GetRequiredService<MySqlContext>();
 
-                // Cria uma nova migração para adicionar a nova tabela (se ainda não existir)
+                // Cria uma nova migraÃ§Ã£o para adicionar a nova tabela (se ainda nÃ£o existir)
                 dbContext.Database.EnsureCreated();
             }
         }

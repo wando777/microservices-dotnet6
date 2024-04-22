@@ -69,16 +69,16 @@ msbuild.wrn*
 *.swm
 
 # Arquivos de configuração do Visual Studio
-*.vs/config/applicationhost.config
-*.vs/config/*.pubxml
-*.vs/config/*.pubxml.user
-*.vs/config/*.user
-*.vs/config/*.vspscc
-*.vs/config/*.vssscc
-*.vs/config/*.wpp.*
-*.vs/config/*.wpp.*.ruleset
-*.vs/config/*.wpp.*.targets
-.vs/config/Server/sqlite3/db.lock
+# *.vs/config/applicationhost.config
+# *.vs/config/*.pubxml
+# *.vs/config/*.pubxml.user
+# *.vs/config/*.user
+# *.vs/config/*.vspscc
+# *.vs/config/*.vssscc
+# *.vs/config/*.wpp.*
+# *.vs/config/*.wpp.*.ruleset
+# *.vs/config/*.wpp.*.targets
+*.vs/*
 
 # Arquivos de configuração do Rider
 .idea/

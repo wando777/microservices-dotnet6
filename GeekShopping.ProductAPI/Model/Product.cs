@@ -1,6 +1,6 @@
-﻿using GeekShopping.ProductAPI.Model.Base;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using GeekShopping.ProductAPI.Model.Base;
 
 namespace GeekShopping.ProductAPI.Model
 {

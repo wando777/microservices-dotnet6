@@ -18,3 +18,7 @@ trim_trailing_whitespace = true
 
 # Set default file type
 [*.cs]
+
+[*.{cs,vb}]
+dotnet_csharpier=true
+

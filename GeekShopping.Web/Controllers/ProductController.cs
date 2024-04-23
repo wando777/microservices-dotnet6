@@ -1,4 +1,5 @@
 using GeekShopping.Web.Services;
+using GeekShopping.Web.Services.Implementations;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GeekShopping.Web.Controllers
@@ -7,10 +8,10 @@ namespace GeekShopping.Web.Controllers
     {
         private readonly IProductService _productService;
 
-        public ProductController(IProductService _productService)
+        public ProductController(IProductService productService)
         {
-            _productService =
-                _productService ?? throw new ArgumentNullException(nameof(_productService));
+            this._productService =
+                productService ?? throw new ArgumentNullException(nameof(_productService));
         }
 
         public async Task<IActionResult> ProductIndex()

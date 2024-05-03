@@ -6,7 +6,6 @@ namespace GeekShopping.IdentityServer.Model.Context;
 
 public class MySqlContext : IdentityDbContext<ApplicationUser>
 {
-    public MySqlContext(DbContextOptions<MySqlContext> options) : base(options)
-    {
-    }
+    public MySqlContext(DbContextOptions<MySqlContext> options)
+        : base(options) { }
 }

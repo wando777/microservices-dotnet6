@@ -26,7 +26,8 @@ namespace GeekShopping.ProductAPI
             var configuration = builder.Configuration;
             var connectionString = builder.Configuration["MySQLConnection:MySQLConnectionString"];
             builder.Services.AddDbContext<MySqlContext>(options =>
-                options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 3, 0))));
+                options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 3, 0)))
+            );
 
             // Configure AutoMapper
             IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
@@ -39,16 +40,18 @@ namespace GeekShopping.ProductAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "GeekShopping.ProductAPI", Version = "v1" });
+                c.SwaggerDoc(
+                    "v1",
+                    new OpenApiInfo { Title = "GeekShopping.ProductAPI", Version = "v1" }
+                );
             });
 
             var app = builder.Build();
 
             app.MapHealthChecks("/healthz");
 
-            // Aplica as migrações e atualiza o banco de dados
+            // Aplica as migracoes e atualiza o banco de dados
             ApplyMigrations(app);
-
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -74,6 +77,7 @@ namespace GeekShopping.ProductAPI
 
             app.Run();
         }
+
         private static void ApplyMigrations(IApplicationBuilder app)
         {
             using (var scope = app.ApplicationServices.CreateScope())
@@ -81,14 +85,16 @@ namespace GeekShopping.ProductAPI
                 var services = scope.ServiceProvider;
                 var dbContext = services.GetRequiredService<MySqlContext>();
 
-                // Cria uma nova migração para adicionar a nova tabela (se ainda não existir)
+                // Cria uma nova migracÃ£o para adicionar a nova tabela (se ainda nÃ£o existir)
                 dbContext.Database.EnsureCreated();
             }
         }
+
         public static IDisposable CreateCollector()
         {
             var builder = DotNetRuntimeStatsBuilder.Default();
-            builder = DotNetRuntimeStatsBuilder.Customize()
+            builder = DotNetRuntimeStatsBuilder
+                .Customize()
                 .WithContentionStats(CaptureLevel.Informational)
                 .WithGcStats(CaptureLevel.Verbose)
                 .WithThreadPoolStats(CaptureLevel.Informational)

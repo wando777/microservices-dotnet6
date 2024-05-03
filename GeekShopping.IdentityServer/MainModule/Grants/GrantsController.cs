@@ -2,7 +2,6 @@
 // See LICENSE in the project root for license information.
 
 
-using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +10,7 @@ using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Stores;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityServerHost.Quickstart.UI
 {
@@ -26,10 +26,12 @@ namespace IdentityServerHost.Quickstart.UI
         private readonly IResourceStore _resources;
         private readonly IEventService _events;
 
-        public GrantsController(IIdentityServerInteractionService interaction,
+        public GrantsController(
+            IIdentityServerInteractionService interaction,
             IClientStore clients,
             IResourceStore resources,
-            IEventService events)
+            IEventService events
+        )
         {
             _interaction = interaction;
             _clients = clients;
@@ -64,7 +66,7 @@ namespace IdentityServerHost.Quickstart.UI
             var grants = await _interaction.GetAllUserGrantsAsync();
 
             var list = new List<GrantViewModel>();
-            foreach(var grant in grants)
+            foreach (var grant in grants)
             {
                 var client = await _clients.FindClientByIdAsync(grant.ClientId);
                 if (client != null)
@@ -80,18 +82,19 @@ namespace IdentityServerHost.Quickstart.UI
                         Description = grant.Description,
                         Created = grant.CreationTime,
                         Expires = grant.Expiration,
-                        IdentityGrantNames = resources.IdentityResources.Select(x => x.DisplayName ?? x.Name).ToArray(),
-                        ApiGrantNames = resources.ApiScopes.Select(x => x.DisplayName ?? x.Name).ToArray()
+                        IdentityGrantNames = resources
+                            .IdentityResources.Select(x => x.DisplayName ?? x.Name)
+                            .ToArray(),
+                        ApiGrantNames = resources
+                            .ApiScopes.Select(x => x.DisplayName ?? x.Name)
+                            .ToArray()
                     };
 
                     list.Add(item);
                 }
             }
 
-            return new GrantsViewModel
-            {
-                Grants = list
-            };
+            return new GrantsViewModel { Grants = list };
         }
     }
 }

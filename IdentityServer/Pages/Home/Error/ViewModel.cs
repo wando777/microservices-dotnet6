@@ -7,9 +7,7 @@ namespace IdentityServer.Pages.Error;
 
 public class ViewModel
 {
-    public ViewModel()
-    {
-    }
+    public ViewModel() { }
 
     public ViewModel(string error)
     {

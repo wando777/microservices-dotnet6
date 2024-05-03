@@ -8,9 +8,7 @@ namespace IdentityServerHost.Quickstart.UI
 {
     public class ErrorViewModel
     {
-        public ErrorViewModel()
-        {
-        }
+        public ErrorViewModel() { }
 
         public ErrorViewModel(string error)
         {

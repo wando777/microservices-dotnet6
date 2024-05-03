@@ -32,7 +32,8 @@ namespace IdentityServerHost.Quickstart.UI
             IDeviceFlowInteractionService interaction,
             IEventService eventService,
             IOptions<IdentityServerOptions> options,
-            ILogger<DeviceController> logger)
+            ILogger<DeviceController> logger
+        )
         {
             _interaction = interaction;
             _events = eventService;
@@ -43,12 +44,17 @@ namespace IdentityServerHost.Quickstart.UI
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            string userCodeParamName = _options.Value.UserInteraction.DeviceVerificationUserCodeParameter;
+            string userCodeParamName = _options
+                .Value
+                .UserInteraction
+                .DeviceVerificationUserCodeParameter;
             string userCode = Request.Query[userCodeParamName];
-            if (string.IsNullOrWhiteSpace(userCode)) return View("UserCodeCapture");
+            if (string.IsNullOrWhiteSpace(userCode))
+                return View("UserCodeCapture");
 
             var vm = await BuildViewModelAsync(userCode);
-            if (vm == null) return View("Error");
+            if (vm == null)
+                return View("Error");
 
             vm.ConfirmUserCode = true;
             return View("UserCodeConfirmation", vm);
@@ -59,7 +65,8 @@ namespace IdentityServerHost.Quickstart.UI
         public async Task<IActionResult> UserCodeCapture(string userCode)
         {
             var vm = await BuildViewModelAsync(userCode);
-            if (vm == null) return View("Error");
+            if (vm == null)
+                return View("Error");
 
             return View("UserCodeConfirmation", vm);
         }
@@ -68,10 +75,12 @@ namespace IdentityServerHost.Quickstart.UI
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Callback(DeviceAuthorizationInputModel model)
         {
-            if (model == null) throw new ArgumentNullException(nameof(model));
+            if (model == null)
+                throw new ArgumentNullException(nameof(model));
 
             var result = await ProcessConsent(model);
-            if (result.HasValidationError) return View("Error");
+            if (result.HasValidationError)
+                return View("Error");
 
             return View("Success");
         }
@@ -81,7 +90,8 @@ namespace IdentityServerHost.Quickstart.UI
             var result = new ProcessConsentResult();
 
             var request = await _interaction.GetAuthorizationContextAsync(model.UserCode);
-            if (request == null) return result;
+            if (request == null)
+                return result;
 
             ConsentResponse grantedConsent = null;
 
@@ -91,7 +101,13 @@ namespace IdentityServerHost.Quickstart.UI
                 grantedConsent = new ConsentResponse { Error = AuthorizationError.AccessDenied };
 
                 // emit event
-                await _events.RaiseAsync(new ConsentDeniedEvent(User.GetSubjectId(), request.Client.ClientId, request.ValidatedResources.RawScopeValues));
+                await _events.RaiseAsync(
+                    new ConsentDeniedEvent(
+                        User.GetSubjectId(),
+                        request.Client.ClientId,
+                        request.ValidatedResources.RawScopeValues
+                    )
+                );
             }
             // user clicked 'yes' - validate the data
             else if (model.Button == "yes")
@@ -102,7 +118,14 @@ namespace IdentityServerHost.Quickstart.UI
                     var scopes = model.ScopesConsented;
                     if (ConsentOptions.EnableOfflineAccess == false)
                     {
-                        scopes = scopes.Where(x => x != Duende.IdentityServer.IdentityServerConstants.StandardScopes.OfflineAccess);
+                        scopes = scopes.Where(x =>
+                            x
+                            != Duende
+                                .IdentityServer
+                                .IdentityServerConstants
+                                .StandardScopes
+                                .OfflineAccess
+                        );
                     }
 
                     grantedConsent = new ConsentResponse
@@ -113,7 +136,15 @@ namespace IdentityServerHost.Quickstart.UI
                     };
 
                     // emit event
-                    await _events.RaiseAsync(new ConsentGrantedEvent(User.GetSubjectId(), request.Client.ClientId, request.ValidatedResources.RawScopeValues, grantedConsent.ScopesValuesConsented, grantedConsent.RememberConsent));
+                    await _events.RaiseAsync(
+                        new ConsentGrantedEvent(
+                            User.GetSubjectId(),
+                            request.Client.ClientId,
+                            request.ValidatedResources.RawScopeValues,
+                            grantedConsent.ScopesValuesConsented,
+                            grantedConsent.RememberConsent
+                        )
+                    );
                 }
                 else
                 {
@@ -143,7 +174,10 @@ namespace IdentityServerHost.Quickstart.UI
             return result;
         }
 
-        private async Task<DeviceAuthorizationViewModel> BuildViewModelAsync(string userCode, DeviceAuthorizationInputModel model = null)
+        private async Task<DeviceAuthorizationViewModel> BuildViewModelAsync(
+            string userCode,
+            DeviceAuthorizationInputModel model = null
+        )
         {
             var request = await _interaction.GetAuthorizationContextAsync(userCode);
             if (request != null)
@@ -154,7 +188,11 @@ namespace IdentityServerHost.Quickstart.UI
             return null;
         }
 
-        private DeviceAuthorizationViewModel CreateConsentViewModel(string userCode, DeviceAuthorizationInputModel model, DeviceFlowAuthorizationRequest request)
+        private DeviceAuthorizationViewModel CreateConsentViewModel(
+            string userCode,
+            DeviceAuthorizationInputModel model,
+            DeviceFlowAuthorizationRequest request
+        )
         {
             var vm = new DeviceAuthorizationViewModel
             {
@@ -170,21 +208,45 @@ namespace IdentityServerHost.Quickstart.UI
                 AllowRememberConsent = request.Client.AllowRememberConsent
             };
 
-            vm.IdentityScopes = request.ValidatedResources.Resources.IdentityResources.Select(x => CreateScopeViewModel(x, vm.ScopesConsented.Contains(x.Name) || model == null)).ToArray();
+            vm.IdentityScopes = request
+                .ValidatedResources.Resources.IdentityResources.Select(x =>
+                    CreateScopeViewModel(x, vm.ScopesConsented.Contains(x.Name) || model == null)
+                )
+                .ToArray();
 
             var apiScopes = new List<ScopeViewModel>();
             foreach (var parsedScope in request.ValidatedResources.ParsedScopes)
             {
-                var apiScope = request.ValidatedResources.Resources.FindApiScope(parsedScope.ParsedName);
+                var apiScope = request.ValidatedResources.Resources.FindApiScope(
+                    parsedScope.ParsedName
+                );
                 if (apiScope != null)
                 {
-                    var scopeVm = CreateScopeViewModel(parsedScope, apiScope, vm.ScopesConsented.Contains(parsedScope.RawValue) || model == null);
+                    var scopeVm = CreateScopeViewModel(
+                        parsedScope,
+                        apiScope,
+                        vm.ScopesConsented.Contains(parsedScope.RawValue) || model == null
+                    );
                     apiScopes.Add(scopeVm);
                 }
             }
-            if (ConsentOptions.EnableOfflineAccess && request.ValidatedResources.Resources.OfflineAccess)
+            if (
+                ConsentOptions.EnableOfflineAccess
+                && request.ValidatedResources.Resources.OfflineAccess
+            )
             {
-                apiScopes.Add(GetOfflineAccessScope(vm.ScopesConsented.Contains(Duende.IdentityServer.IdentityServerConstants.StandardScopes.OfflineAccess) || model == null));
+                apiScopes.Add(
+                    GetOfflineAccessScope(
+                        vm.ScopesConsented.Contains(
+                            Duende
+                                .IdentityServer
+                                .IdentityServerConstants
+                                .StandardScopes
+                                .OfflineAccess
+                        )
+                            || model == null
+                    )
+                );
             }
             vm.ApiScopes = apiScopes;
 
@@ -204,7 +266,11 @@ namespace IdentityServerHost.Quickstart.UI
             };
         }
 
-        public ScopeViewModel CreateScopeViewModel(ParsedScopeValue parsedScopeValue, ApiScope apiScope, bool check)
+        public ScopeViewModel CreateScopeViewModel(
+            ParsedScopeValue parsedScopeValue,
+            ApiScope apiScope,
+            bool check
+        )
         {
             return new ScopeViewModel
             {
@@ -217,6 +283,7 @@ namespace IdentityServerHost.Quickstart.UI
                 Checked = check || apiScope.Required
             };
         }
+
         private ScopeViewModel GetOfflineAccessScope(bool check)
         {
             return new ScopeViewModel

@@ -2,19 +2,19 @@
 // See LICENSE in the project root for license information.
 
 
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using System;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Validation;
 using IdentityModel;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace IdentityServerHost.Quickstart.UI
 {
@@ -32,7 +32,8 @@ namespace IdentityServerHost.Quickstart.UI
         public ConsentController(
             IIdentityServerInteractionService interaction,
             IEventService events,
-            ILogger<ConsentController> logger)
+            ILogger<ConsentController> logger
+        )
         {
             _interaction = interaction;
             _events = events;
@@ -100,7 +101,8 @@ namespace IdentityServerHost.Quickstart.UI
 
             // validate return url is still valid
             var request = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
-            if (request == null) return result;
+            if (request == null)
+                return result;
 
             ConsentResponse grantedConsent = null;
 
@@ -110,7 +112,13 @@ namespace IdentityServerHost.Quickstart.UI
                 grantedConsent = new ConsentResponse { Error = AuthorizationError.AccessDenied };
 
                 // emit event
-                await _events.RaiseAsync(new ConsentDeniedEvent(User.GetSubjectId(), request.Client.ClientId, request.ValidatedResources.RawScopeValues));
+                await _events.RaiseAsync(
+                    new ConsentDeniedEvent(
+                        User.GetSubjectId(),
+                        request.Client.ClientId,
+                        request.ValidatedResources.RawScopeValues
+                    )
+                );
             }
             // user clicked 'yes' - validate the data
             else if (model?.Button == "yes")
@@ -121,7 +129,14 @@ namespace IdentityServerHost.Quickstart.UI
                     var scopes = model.ScopesConsented;
                     if (ConsentOptions.EnableOfflineAccess == false)
                     {
-                        scopes = scopes.Where(x => x != Duende.IdentityServer.IdentityServerConstants.StandardScopes.OfflineAccess);
+                        scopes = scopes.Where(x =>
+                            x
+                            != Duende
+                                .IdentityServer
+                                .IdentityServerConstants
+                                .StandardScopes
+                                .OfflineAccess
+                        );
                     }
 
                     grantedConsent = new ConsentResponse
@@ -132,7 +147,15 @@ namespace IdentityServerHost.Quickstart.UI
                     };
 
                     // emit event
-                    await _events.RaiseAsync(new ConsentGrantedEvent(User.GetSubjectId(), request.Client.ClientId, request.ValidatedResources.RawScopeValues, grantedConsent.ScopesValuesConsented, grantedConsent.RememberConsent));
+                    await _events.RaiseAsync(
+                        new ConsentGrantedEvent(
+                            User.GetSubjectId(),
+                            request.Client.ClientId,
+                            request.ValidatedResources.RawScopeValues,
+                            grantedConsent.ScopesValuesConsented,
+                            grantedConsent.RememberConsent
+                        )
+                    );
                 }
                 else
                 {
@@ -162,7 +185,10 @@ namespace IdentityServerHost.Quickstart.UI
             return result;
         }
 
-        private async Task<ConsentViewModel> BuildViewModelAsync(string returnUrl, ConsentInputModel model = null)
+        private async Task<ConsentViewModel> BuildViewModelAsync(
+            string returnUrl,
+            ConsentInputModel model = null
+        )
         {
             var request = await _interaction.GetAuthorizationContextAsync(returnUrl);
             if (request != null)
@@ -178,8 +204,10 @@ namespace IdentityServerHost.Quickstart.UI
         }
 
         private ConsentViewModel CreateConsentViewModel(
-            ConsentInputModel model, string returnUrl,
-            AuthorizationRequest request)
+            ConsentInputModel model,
+            string returnUrl,
+            AuthorizationRequest request
+        )
         {
             var vm = new ConsentViewModel
             {
@@ -195,32 +223,60 @@ namespace IdentityServerHost.Quickstart.UI
                 AllowRememberConsent = request.Client.AllowRememberConsent
             };
 
-            vm.IdentityScopes = request.ValidatedResources.Resources.IdentityResources
-                .Select(x => CreateScopeViewModel(x, vm.ScopesConsented.Contains(x.Name) || model == null))
+            vm.IdentityScopes = request
+                .ValidatedResources.Resources.IdentityResources.Select(x =>
+                    CreateScopeViewModel(x, vm.ScopesConsented.Contains(x.Name) || model == null)
+                )
                 .ToArray();
 
-            var resourceIndicators = request.Parameters.GetValues(OidcConstants.AuthorizeRequest.Resource) ?? Enumerable.Empty<string>();
-            var apiResources = request.ValidatedResources.Resources.ApiResources.Where(x => resourceIndicators.Contains(x.Name));
+            var resourceIndicators =
+                request.Parameters.GetValues(OidcConstants.AuthorizeRequest.Resource)
+                ?? Enumerable.Empty<string>();
+            var apiResources = request.ValidatedResources.Resources.ApiResources.Where(x =>
+                resourceIndicators.Contains(x.Name)
+            );
 
             var apiScopes = new List<ScopeViewModel>();
             foreach (var parsedScope in request.ValidatedResources.ParsedScopes)
             {
-                var apiScope = request.ValidatedResources.Resources.FindApiScope(parsedScope.ParsedName);
+                var apiScope = request.ValidatedResources.Resources.FindApiScope(
+                    parsedScope.ParsedName
+                );
                 if (apiScope != null)
                 {
-                    var scopeVm = CreateScopeViewModel(parsedScope, apiScope, vm.ScopesConsented.Contains(parsedScope.RawValue) || model == null);
-                    scopeVm.Resources = apiResources.Where(x => x.Scopes.Contains(parsedScope.ParsedName))
-                        .Select(x=> new ResourceViewModel
+                    var scopeVm = CreateScopeViewModel(
+                        parsedScope,
+                        apiScope,
+                        vm.ScopesConsented.Contains(parsedScope.RawValue) || model == null
+                    );
+                    scopeVm.Resources = apiResources
+                        .Where(x => x.Scopes.Contains(parsedScope.ParsedName))
+                        .Select(x => new ResourceViewModel
                         {
                             Name = x.Name,
                             DisplayName = x.DisplayName ?? x.Name,
-                        }).ToArray();
+                        })
+                        .ToArray();
                     apiScopes.Add(scopeVm);
                 }
             }
-            if (ConsentOptions.EnableOfflineAccess && request.ValidatedResources.Resources.OfflineAccess)
+            if (
+                ConsentOptions.EnableOfflineAccess
+                && request.ValidatedResources.Resources.OfflineAccess
+            )
             {
-                apiScopes.Add(GetOfflineAccessScope(vm.ScopesConsented.Contains(Duende.IdentityServer.IdentityServerConstants.StandardScopes.OfflineAccess) || model == null));
+                apiScopes.Add(
+                    GetOfflineAccessScope(
+                        vm.ScopesConsented.Contains(
+                            Duende
+                                .IdentityServer
+                                .IdentityServerConstants
+                                .StandardScopes
+                                .OfflineAccess
+                        )
+                            || model == null
+                    )
+                );
             }
             vm.ApiScopes = apiScopes;
 
@@ -241,7 +297,11 @@ namespace IdentityServerHost.Quickstart.UI
             };
         }
 
-        public ScopeViewModel CreateScopeViewModel(ParsedScopeValue parsedScopeValue, ApiScope apiScope, bool check)
+        public ScopeViewModel CreateScopeViewModel(
+            ParsedScopeValue parsedScopeValue,
+            ApiScope apiScope,
+            bool check
+        )
         {
             var displayName = apiScope.DisplayName ?? apiScope.Name;
             if (!String.IsNullOrWhiteSpace(parsedScopeValue.ParsedParameter))
